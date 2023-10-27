@@ -8,6 +8,17 @@
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
     <link rel="stylesheet" href="~/E_Commerce.styles.css" asp-append-version="true" />
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
+    <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css" />
+    <style>
+        .footers{
+            position:absolute;
+            bottom:0;
+            width:100%;
+            height:4rem;
+            color:"white"
+        }
+      
+    </style>
 </head>
 <body>
     <header>
@@ -36,12 +47,13 @@
     </header>
     <div class="container">
         <main role="main" class="pb-3">
+            <partial name="_notification" />
             @RenderBody()
         </main>
     </div>
 
-    <footer class="border-top footer bg-primary text-muted ">
-        <div class="text-center">
+    <footer class="border-top footer bg-primary text-muted footers ">
+        <div class="text-center text-secondary footer-text">
             Made with <i class="bi bi-balloon-heart-fill"></i> by Clinton
         </div>
     </footer>
