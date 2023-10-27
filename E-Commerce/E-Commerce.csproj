@@ -18,4 +18,14 @@
     <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="7.0.9" />
   </ItemGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\E-commerce.Data\E-commerce.Data.csproj" />
+    <ProjectReference Include="..\E-commerce.Models\E-commerce.Models.csproj" />
+    <ProjectReference Include="..\E-commerce.Utility\E-commerce.Utility.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="Controllers\" />
+  </ItemGroup>
+
 </Project>
