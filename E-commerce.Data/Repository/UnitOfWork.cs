@@ -6,12 +6,14 @@ namespace E_commerce.Data.Repository
     public class UnitOfWork : IUnitOfWork
     {
         public ICategory Category { get; private set; }
+        public IProduct Product { get; private set; }
         private AppDbContext _db;
 
         public UnitOfWork(AppDbContext db)
         {
             _db = db;
             Category = new CategoryRepository(_db);
+            Product = new ProductRepository(_db);
         }
 
         public void Save()
