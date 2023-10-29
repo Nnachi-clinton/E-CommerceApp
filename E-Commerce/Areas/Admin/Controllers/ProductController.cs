@@ -1,8 +1,6 @@
 ﻿using E_commerce.Data.Repository.IRepository;
 using E_commerce.Models.Models;
 using E_commerce.Models.ViewModels;
-using E_Commerce.Data;
-using E_Commerce.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 
@@ -12,20 +10,21 @@ namespace E_Commerce.Areas.Admin.Controllers
     public class ProductController : Controller
     {
         private readonly IUnitOfWork _db;
-
-        public ProductController(IUnitOfWork db)
+        private readonly IWebHostEnvironment _webEnvironment;
+        public ProductController(IUnitOfWork db, IWebHostEnvironment webEnvironment)
         {
             _db = db;
+            _webEnvironment = webEnvironment;   
         }
 
         public IActionResult Index()
         {
-            var getAll = _db.Product.GetAll().ToList();
+            var getAll = _db.Product.GetAll(includeProperties:"Category").ToList();
             
             return View(getAll);
         }
 
-        public IActionResult Create()
+        public IActionResult Upsert(int? id)
         {
             ProductViewModels productVm = new()
             {
@@ -37,15 +36,59 @@ namespace E_Commerce.Areas.Admin.Controllers
                 }),
                 Product = new Product()
             };
+            if (id==null || id==0)
+            {
+                //Create
+                return View(productVm);
+            }
+            else
+            {
+                //Update
+                productVm.Product = _db.Product.Get(x=>x.Id==id);
+                return View(productVm);
+            }
 
-            return View(productVm);
+            
         }
         [HttpPost]
-        public IActionResult Create(ProductViewModels category)
+        public IActionResult Upsert(ProductViewModels category, IFormFile? file)
         {
-              if (ModelState.IsValid)
+            if (ModelState.IsValid)
             {
-                _db.Product.Add(category.Product);
+                string wwwRootPath = _webEnvironment.WebRootPath;
+                if (file != null)
+                {
+                    string fileName = Guid.NewGuid().ToString() + Path.GetExtension(file.FileName);
+                    string productPath =Path.Combine(wwwRootPath, @"images\product");
+
+                    if (!string.IsNullOrEmpty(category.Product.ImageUrl))
+                    {
+                        //delete the old image
+                        var oldImagePath = 
+                            Path.Combine(wwwRootPath, category.Product.ImageUrl.TrimStart('\\'));
+                        if (System.IO.File.Exists(oldImagePath))
+                        {
+                            System.IO.File.Delete(oldImagePath);
+                        }
+                    }
+
+                    using (var filestream = new FileStream(Path.Combine(productPath,fileName),FileMode.Create))
+                    {
+                        file.CopyTo(filestream);
+                    }
+                    category.Product.ImageUrl = @"\images\product\" + fileName;
+                }
+
+                if (category.Product.Id==0)
+                {
+                    _db.Product.Add(category.Product);
+                }
+                else
+                {
+                    _db.Product.Update(category.Product);
+                }
+
+               
                 _db.Save();
                 TempData["Success"] = "Product created successfully";
                 return RedirectToAction("Index");
@@ -63,33 +106,7 @@ namespace E_Commerce.Areas.Admin.Controllers
            
 
         }
-        public IActionResult Edit(int Id)
-        {
-            if (Id == null || Id == 0)
-            {
-                return NotFound();
-            }
-            var category = _db.Product.Get(c => c.Id == Id);
-            if (category == null)
-            {
-                return BadRequest();
-            }
-            return View(category);
-        }
-        [HttpPost]
-        public IActionResult Edit(Product category)
-        {
-
-            if (ModelState.IsValid)
-            {
-                _db.Product.Update(category);
-                _db.Save();
-                TempData["Success"] = "Product Updated successfully";
-                return RedirectToAction("Index");
-            }
-            return View();
-
-        }
+      
         public IActionResult Delete(int Id)
         {
             if (Id == null || Id == 0)
@@ -117,5 +134,20 @@ namespace E_Commerce.Areas.Admin.Controllers
             return RedirectToAction("Index");
 
         }
+
+
+        #region API CALLS
+        [HttpGet]
+        public IActionResult GetAll()
+        {
+            var getAll = _db.Product.GetAll(includeProperties: "Category").ToList();
+            return Json(new
+            {
+                data = getAll
+            });
+        }
+
+
+        #endregion
     }
 }

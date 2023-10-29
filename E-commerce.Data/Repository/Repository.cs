@@ -14,6 +14,7 @@ namespace E_commerce.Data.Repository
         {
             _context = context;
             this.DbSet = _context.Set<T>();
+            _context.Products.Include(u => u.Category);
         }
 
         public void Add(T entity)
@@ -21,16 +22,32 @@ namespace E_commerce.Data.Repository
            DbSet.Add(entity);
         }
 
-        public T Get(Expression<Func<T, bool>> filter)
+        public T Get(Expression<Func<T, bool>> filter, string? includeProperties = null)
         {
             IQueryable<T> search = DbSet;
             search = search.Where(filter);
+            if (!string.IsNullOrEmpty(includeProperties))
+            {
+                foreach (var item in includeProperties
+                    .Split(new char[] { ',' }, StringSplitOptions.RemoveEmptyEntries))
+                {
+                    search = search.Include(item);
+                }
+            }
             return search.FirstOrDefault();
         }
 
-        public IEnumerable<T> GetAll()
+        public IEnumerable<T> GetAll(string? includeProperties = null)
         {
             IQueryable<T> search = DbSet;
+            if (!string.IsNullOrEmpty(includeProperties))
+            {
+                foreach (var item in includeProperties
+                    .Split(new char[] { ',' }, StringSplitOptions.RemoveEmptyEntries))
+                {
+                    search = search.Include(item);
+                }
+            }
             return search.ToList();
         }
 
