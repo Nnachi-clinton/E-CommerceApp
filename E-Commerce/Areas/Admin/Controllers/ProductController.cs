@@ -1,6 +1,7 @@
 ﻿using E_commerce.Data.Repository.IRepository;
 using E_commerce.Models.Models;
 using E_commerce.Models.ViewModels;
+using E_Commerce.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 
@@ -107,33 +108,33 @@ namespace E_Commerce.Areas.Admin.Controllers
 
         }
       
-        public IActionResult Delete(int Id)
-        {
-            if (Id == null || Id == 0)
-            {
-                return NotFound();
-            }
-            var category = _db.Product.Get(c => c.Id == Id);
-            if (category == null)
-            {
-                return BadRequest();
-            }
-            return View(category);
-        }
-        [HttpPost, ActionName("Delete")]
-        public IActionResult DeletePost(int Id)
-        {
-            var category = _db.Product.Get(x => x.Id == Id);
-            if (category == null)
-            {
-                return NotFound();
-            }
-            _db.Product.Remove(category);
-            _db.Save();
-            TempData["Success"] = "Product Deleted successfully";
-            return RedirectToAction("Index");
+        //public IActionResult Delete(int Id)
+        //{
+        //    if (Id == null || Id == 0)
+        //    {
+        //        return NotFound();
+        //    }
+        //    var category = _db.Product.Get(c => c.Id == Id);
+        //    if (category == null)
+        //    {
+        //        return BadRequest();
+        //    }
+        //    return View(category);
+        //}
+        //[HttpPost, ActionName("Delete")]
+        //public IActionResult DeletePost(int Id)
+        //{
+        //    var category = _db.Product.Get(x => x.Id == Id);
+        //    if (category == null)
+        //    {
+        //        return NotFound();
+        //    }
+        //    _db.Product.Remove(category);
+        //    _db.Save();
+        //    TempData["Success"] = "Product Deleted successfully";
+        //    return RedirectToAction("Index");
 
-        }
+        //}
 
 
         #region API CALLS
@@ -144,6 +145,31 @@ namespace E_Commerce.Areas.Admin.Controllers
             return Json(new
             {
                 data = getAll
+            });
+        } 
+        
+        [HttpDelete]
+        public IActionResult Delete(int? Id)
+        {
+            var productToBeDeleted = _db.Product.Get(x => x.Id == Id);
+            if (productToBeDeleted == null)
+            {
+                return Json(new {success = false, message = "Error while deleting"});
+            }
+            var oldImagePath =
+                           Path.Combine(_webEnvironment.WebRootPath,
+                           productToBeDeleted.ImageUrl.TrimStart('\\'));
+            if (System.IO.File.Exists(oldImagePath))
+            {
+                System.IO.File.Delete(oldImagePath);
+            }
+
+            _db.Product.Remove(productToBeDeleted);
+            _db.Save();
+
+            return Json(new
+            {
+                success = true, message ="Deleted successfully"
             });
         }
 
