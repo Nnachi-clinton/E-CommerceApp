@@ -7,6 +7,7 @@ namespace E_commerce.Data.Repository
     {
         public ICategory Category { get; private set; }
         public IProduct Product { get; private set; }
+        public ICompany Company { get; private set; }
         private AppDbContext _db;
 
         public UnitOfWork(AppDbContext db)
@@ -14,6 +15,7 @@ namespace E_commerce.Data.Repository
             _db = db;
             Category = new CategoryRepository(_db);
             Product = new ProductRepository(_db);
+            Company = new CompanyRepository(_db);
         }
 
         public void Save()

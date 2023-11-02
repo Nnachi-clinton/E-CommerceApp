@@ -30,7 +30,7 @@ namespace E_commerce.Data.Repository
                 productfromDb.Description = product.Description;
                 productfromDb.CategoryId = product.CategoryId;
                 productfromDb.Author = product.Author;
-                if (productfromDb.ImageUrl != null)
+                if (productfromDb.ImageUrl != null || productfromDb.ImageUrl ==null)
                 {
                     productfromDb.ImageUrl = product.ImageUrl;
                 }

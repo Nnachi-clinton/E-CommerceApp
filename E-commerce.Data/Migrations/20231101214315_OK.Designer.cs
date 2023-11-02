@@ -4,6 +4,7 @@ using E_Commerce.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace E_commerce.Data.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    partial class AppDbContextModelSnapshot : ModelSnapshot
+    [Migration("20231101214315_OK")]
+    partial class OK
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -59,60 +62,6 @@ namespace E_commerce.Data.Migrations
                             Id = 3,
                             DisplayOrder = 3,
                             Name = "History"
-                        });
-                });
-
-            modelBuilder.Entity("E_commerce.Models.Models.Company", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<string>("City")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("Name")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("PhoneNumber")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("PostalCode")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("State")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("StreetAddress")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("Companies");
-
-                    b.HasData(
-                        new
-                        {
-                            Id = 1,
-                            City = "Cross",
-                            Name = "Peace samuel",
-                            PhoneNumber = "23455667",
-                            PostalCode = "DDE12",
-                            State = "Bisbon",
-                            StreetAddress = "County Peace"
-                        },
-                        new
-                        {
-                            Id = 2,
-                            City = "Crossx",
-                            Name = "samuel Mbah",
-                            PhoneNumber = "234556667",
-                            PostalCode = "DAS12",
-                            State = "Bisbon",
-                            StreetAddress = "County Side"
                         });
                 });
 
@@ -464,9 +413,6 @@ namespace E_commerce.Data.Migrations
                     b.Property<string>("City")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int>("CompanyId")
-                        .HasColumnType("int");
-
                     b.Property<string>("Name")
                         .HasColumnType("nvarchar(max)");
 
@@ -478,8 +424,6 @@ namespace E_commerce.Data.Migrations
 
                     b.Property<string>("StreetAddress")
                         .HasColumnType("nvarchar(max)");
-
-                    b.HasIndex("CompanyId");
 
                     b.HasDiscriminator().HasValue("User");
                 });
@@ -544,17 +488,6 @@ namespace E_commerce.Data.Migrations
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
-                });
-
-            modelBuilder.Entity("E_commerce.Models.Models.User", b =>
-                {
-                    b.HasOne("E_commerce.Models.Models.Company", "Company")
-                        .WithMany()
-                        .HasForeignKey("CompanyId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Company");
                 });
 #pragma warning restore 612, 618
         }

@@ -4,6 +4,7 @@
     {
         ICategory Category { get; }
         IProduct Product { get; }
+        ICompany Company { get; }
         void Save();
 
 

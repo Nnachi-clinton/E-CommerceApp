@@ -14,6 +14,7 @@ namespace E_Commerce.Data
 
         public DbSet<Category> Categories { get; set; }
         public DbSet<Product> Products { get; set; }
+        public DbSet<Company> Companies { get; set; }
         public DbSet<User> USers { get; set; }
 
         protected override void  OnModelCreating(ModelBuilder modelBuilder)
@@ -26,6 +27,15 @@ namespace E_Commerce.Data
                 new Category { Id = 3, Name = "History", DisplayOrder = 3 }
 
                 );
+
+            modelBuilder.Entity<Company>().HasData(
+
+           new Company { Id = 1, Name = "Peace samuel", StreetAddress = "County Peace",City = "Cross",
+                        PhoneNumber="23455667", PostalCode="DDE12",State="Bisbon"}, 
+           new Company { Id = 2, Name = "samuel Mbah", StreetAddress = "County Side",City = "Crossx",
+                        PhoneNumber="234556667", PostalCode="DAS12",State="Bisbon"}
+
+           );
 
             modelBuilder.Entity<Product>().HasData(
 
