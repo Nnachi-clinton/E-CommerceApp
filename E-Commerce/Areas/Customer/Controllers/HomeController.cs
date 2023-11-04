@@ -25,8 +25,14 @@ namespace E_Commerce.Areas.Customer.Controllers
         }
         public IActionResult Details(int id)
         {
-            Product product = _db.Product.Get(x=>x.Id==id,includeProperties: "Category");
-            return View(product);
+            ShoppingCart cart = new()
+            {
+                Product = _db.Product.Get(x => x.Id == id, includeProperties: "Category"),
+                Count = 1,
+                ProductId = id
+            };
+           
+            return View(cart);
         }
 
 
